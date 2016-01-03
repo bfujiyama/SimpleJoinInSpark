@@ -1,0 +1,39 @@
+# Load datasets
+fileA = sc.textFile("input/join1_FileA.txt")
+fileA.collect()
+# Out[]: [u'able,991', u'about,11', u'burger,15', u'actor,22']
+fileB = sc.textFile("input/join1_FileB.txt")
+fileB.collect()
+#Out[29]: 
+#[u'Jan-01 able,5',
+# u'Feb-02 about,3',
+# u'Mar-03 about,8 ',
+# u'Apr-04 able,13',
+# u'Feb-22 actor,3',
+# u'Feb-23 burger,5',
+# u'Mar-08 burger,2',
+# u'Dec-15 able,100']
+
+# Launch pyspark shell:
+pyspark_driver_python=ipython pyspark
+# or just "pyspark"
+
+# create a map function for fileA that takes a line, splits it on the comma and turns the count to an integer
+# mapper for fileA
+def split_fileA(line):
+    # split the input line in word and count on the comma
+     line = line.strip()
+     key_value = line.split(",")
+     word = key_value[0]
+     count = key_value[1]
+		# turn the count into an integer
+     count = int(count)
+     return (word, count)
+     
+test_line = "able,991"
+split_fileA(test_line)
+# Out[]: ('able', 991)
+
+fileA_data = fileA.map(split_fileA)
+fileA_data.collect()
+# Out[]: [(u'able', 991), (u'about', 11), (u'burger', 15), (u'actor', 22)]
